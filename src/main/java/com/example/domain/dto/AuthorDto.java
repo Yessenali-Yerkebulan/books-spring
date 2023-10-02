@@ -1,20 +1,15 @@
-package com.example.entities;
+package com.example.domain.dto;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Data
-@Table(name="authors")
-public class Author {
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "author_id_seq")
+public class AuthorDto {
     private Long id;
     private String name;
     private Integer age;
