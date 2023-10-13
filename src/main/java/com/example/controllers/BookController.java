@@ -1,6 +1,8 @@
 package com.example.controllers;
 
 import com.example.domain.dto.BookDto;
+import com.example.domain.dto.BookDto;
+import com.example.domain.entities.BookEntity;
 import com.example.domain.entities.BookEntity;
 import com.example.mappers.Mapper;
 import com.example.services.BookService;
@@ -9,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -23,12 +26,11 @@ public class BookController {
         this.bookService = bookService;
     }
 
-    @PutMapping("/books/{isbn}")
-    public ResponseEntity<BookDto> createBook(@PathVariable("isbn") String isbn, @RequestBody BookDto bookDto){
-        BookEntity bookEntity = bookMapper.mapFrom(bookDto);
-        BookEntity savedBookEntity = bookService.createBook(isbn, bookEntity);
-        BookDto savedBookDto = bookMapper.mapTo(savedBookEntity);
-        return new ResponseEntity<>(savedBookDto, HttpStatus.CREATED);
+    @PostMapping(path="/books")
+    public BookDto createBook(@RequestBody BookDto book){
+        BookEntity bookEntity = bookMapper.mapFrom(book);
+        BookEntity savedBookEntity = bookService.createBook(bookEntity);
+        return bookMapper.mapTo(savedBookEntity);
     }
 
     @GetMapping(path="/books")
@@ -37,5 +39,14 @@ public class BookController {
         return books.stream()
                 .map(bookMapper::mapTo)
                 .collect(Collectors.toList());
+    }
+
+    @GetMapping(path="/books/{isbn}")
+    public ResponseEntity<BookDto> getBook(@PathVariable("isbn") Long isbn){
+        Optional<BookEntity> foundBook = bookService.findOne(isbn);
+        return foundBook.map(bookEntity -> {
+            BookDto bookDto = bookMapper.mapTo(bookEntity);
+            return new ResponseEntity<>(bookDto, HttpStatus.OK);
+        }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 }

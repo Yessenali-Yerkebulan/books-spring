@@ -17,7 +17,8 @@ import lombok.NoArgsConstructor;
 @Entity
 public class BookEntity {
     @Id
-    private String isbn;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "author_id_seq")
+    private Long isbn;
     private String title;
 
     @ManyToOne(cascade = CascadeType.ALL)
