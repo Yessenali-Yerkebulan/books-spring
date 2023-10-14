@@ -4,6 +4,7 @@ import com.example.domain.dto.BookDto;
 import com.example.domain.dto.BookDto;
 import com.example.domain.entities.BookEntity;
 import com.example.domain.entities.BookEntity;
+import com.example.domain.entities.BookEntity;
 import com.example.mappers.Mapper;
 import com.example.services.BookService;
 import org.springframework.http.HttpStatus;
@@ -29,7 +30,7 @@ public class BookController {
     @PostMapping(path="/books")
     public BookDto createBook(@RequestBody BookDto book){
         BookEntity bookEntity = bookMapper.mapFrom(book);
-        BookEntity savedBookEntity = bookService.createBook(bookEntity);
+        BookEntity savedBookEntity = bookService.save(bookEntity);
         return bookMapper.mapTo(savedBookEntity);
     }
 
@@ -48,5 +49,23 @@ public class BookController {
             BookDto bookDto = bookMapper.mapTo(bookEntity);
             return new ResponseEntity<>(bookDto, HttpStatus.OK);
         }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+    
+    @PutMapping(path="/books/{isbn}")
+    public ResponseEntity<BookDto> fullUpdateBook(
+            @PathVariable("isbn") Long isbn,
+            @RequestBody BookDto bookDto
+    ){
+        if(!bookService.isExists(isbn)){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        bookDto.setIsbn(isbn);
+        BookEntity bookEntity = bookMapper.mapFrom(bookDto);
+        BookEntity savedBookEntity = bookService.save(bookEntity);
+        return new ResponseEntity<>(
+                bookMapper.mapTo(savedBookEntity),
+                HttpStatus.OK
+        );
     }
 }
