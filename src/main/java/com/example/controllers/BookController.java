@@ -8,6 +8,7 @@ import com.example.domain.entities.BookEntity;
 import com.example.domain.entities.BookEntity;
 import com.example.mappers.Mapper;
 import com.example.services.BookService;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -84,5 +85,10 @@ public class BookController {
                 bookMapper.mapTo(updatedBook),
                 HttpStatus.OK
         );
+    }
+    @DeleteMapping(path="/books/{id}")
+    public ResponseEntity deleteBook(@PathVariable("id") Long id){
+        bookService.delete(id);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 }
