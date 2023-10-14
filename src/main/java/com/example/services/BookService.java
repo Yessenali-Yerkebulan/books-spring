@@ -13,4 +13,6 @@ public interface BookService {
     Optional<BookEntity> findOne(Long isbn);
 
     boolean isExists(Long isbn);
+
+    BookEntity partialUpdate(Long id, BookEntity bookEntity);
 }

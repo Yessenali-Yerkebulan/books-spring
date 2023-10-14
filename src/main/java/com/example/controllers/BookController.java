@@ -2,6 +2,7 @@ package com.example.controllers;
 
 import com.example.domain.dto.BookDto;
 import com.example.domain.dto.BookDto;
+import com.example.domain.entities.AuthorEntity;
 import com.example.domain.entities.BookEntity;
 import com.example.domain.entities.BookEntity;
 import com.example.domain.entities.BookEntity;
@@ -65,6 +66,22 @@ public class BookController {
         BookEntity savedBookEntity = bookService.save(bookEntity);
         return new ResponseEntity<>(
                 bookMapper.mapTo(savedBookEntity),
+                HttpStatus.OK
+        );
+    }
+
+    @PatchMapping(path = "/books/{isbn}")
+    public ResponseEntity<BookDto> partialUpdate(
+            @PathVariable("isbn") Long id,
+            @RequestBody BookDto bookDto
+    ){
+        if(!bookService.isExists(id)){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        BookEntity bookEntity = bookMapper.mapFrom(bookDto);
+        BookEntity updatedBook = bookService.partialUpdate(id, bookEntity);
+        return new ResponseEntity<>(
+                bookMapper.mapTo(updatedBook),
                 HttpStatus.OK
         );
     }

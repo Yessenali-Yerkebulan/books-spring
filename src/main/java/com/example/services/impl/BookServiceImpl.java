@@ -42,5 +42,16 @@ public class BookServiceImpl implements BookService {
         return bookRepository.existsById(isbn);
     }
 
+    @Override
+    public BookEntity partialUpdate(Long id, BookEntity bookEntity) {
+        bookEntity.setIsbn(id);
+
+        return bookRepository.findById(id).map(existingBook->{
+            Optional.ofNullable(bookEntity.getTitle()).ifPresent(existingBook::setTitle);
+            Optional.ofNullable(bookEntity.getAuthor()).ifPresent(existingBook::setAuthor);
+            return bookRepository.save(existingBook);
+        }).orElseThrow(()->new RuntimeException("Book does not exist"));
+    }
+
 
 }
