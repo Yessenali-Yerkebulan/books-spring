@@ -3,6 +3,8 @@ package com.example.services.impl;
 import com.example.domain.entities.BookEntity;
 import com.example.repositories.BookRepository;
 import com.example.services.BookService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,6 +32,11 @@ public class BookServiceImpl implements BookService {
                 .findAll()
                 .spliterator(),
                 false).collect(Collectors.toList());
+    }
+
+    @Override
+    public Page<BookEntity> findAll(Pageable pageable) {
+        return  bookRepository.findAll(pageable);
     }
 
     @Override
